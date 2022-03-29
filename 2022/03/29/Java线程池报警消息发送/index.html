@@ -25,7 +25,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://s2.loli.net/2022/03/29/g57ZYApHBGcet46.jpg">
 <meta property="article:published_time" content="2022-03-29T09:18:52.000Z">
-<meta property="article:modified_time" content="2022-03-29T09:22:23.093Z">
+<meta property="article:modified_time" content="2022-03-29T09:23:43.654Z">
 <meta property="article:author" content="Kirby">
 <meta property="article:tag" content="Java">
 <meta name="twitter:card" content="summary_large_image">
@@ -248,7 +248,7 @@
 
 
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//添加代理类中发送告警功能</span><br><span class="hljs-meta">@AllArgsConstructor</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">RejectedProxyInvocationHandler</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">InvocationHandler</span> &#123;<br><br>    <span class="hljs-keyword">private</span> Object target;<br><br>    <span class="hljs-keyword">private</span> AtomicLong rejectCount;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> String threadPoolId;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> Object <span class="hljs-title function_">invoke</span><span class="hljs-params">(Object proxy, Method method, Object[] args)</span> <span class="hljs-keyword">throws</span> Throwable &#123;<br>        rejectCount.getAndIncrement();<br>        <span class="hljs-comment">// 发送警告信息 钉钉、邮箱...</span><br>        System.out.println(<span class="hljs-string">&quot;ALARM thread pool &quot;</span> + threadPoolId + <span class="hljs-string">&quot; has rejected mission&quot;</span>);<br>        <span class="hljs-comment">//alarm.sendAlarm(threadPoolId);</span><br>        <span class="hljs-keyword">return</span> method.invoke(target, args);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
-<p><kbd>Shift</kbd>+<kbd>F9</kbd>执行<br><img src="https://img-blog.csdnimg.cn/eda3525d0cdb4b439c6dfaeb2e35585f.png" srcset="/img/loading.gif" lazyload alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/img_convert/b9d5185ef281cf6c8c856c3513dac865.png" srcset="/img/loading.gif" lazyload></p>
+<p><kbd>Shift</kbd>+<kbd>F9</kbd>执行<br><img src="https://img-blog.csdnimg.cn/eda3525d0cdb4b439c6dfaeb2e35585f.png" srcset="/img/loading.gif" lazyload alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/img_convert/b9d5185ef281cf6c8c856c3513dac865.png" srcset="/img/loading.gif" lazyload alt="卡比镇楼"></p>
 
             </div>
             <hr>
