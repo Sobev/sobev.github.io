@@ -1,0 +1,513 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="https://s2.loli.net/2022/03/29/uGDbUvfzrdeO4PH.jpg">
+  <link rel="icon" href="https://s2.loli.net/2022/03/29/uGDbUvfzrdeO4PH.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Kirby">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="技术选型 BACKEND: SpringBoot(2.5.1), Mysql(8.0), Redis …  FRONTEND: EAdmin, jq,表格组件(douyin上的) (node -v 11.9.0 npm -v 6.5.0 gulp -v 3.9.1)  前端模板#+BEGIN_PINNEDhttps:&#x2F;&#x2F;github.com&#x2F;iview&#x2F;iview-admin   http:&#x2F;&#x2F;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FMS日志">
+<meta property="og:url" content="http://example.com/2022/03/30/FMS%E6%97%A5%E5%BF%97/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="技术选型 BACKEND: SpringBoot(2.5.1), Mysql(8.0), Redis …  FRONTEND: EAdmin, jq,表格组件(douyin上的) (node -v 11.9.0 npm -v 6.5.0 gulp -v 3.9.1)  前端模板#+BEGIN_PINNEDhttps:&#x2F;&#x2F;github.com&#x2F;iview&#x2F;iview-admin   http:&#x2F;&#x2F;">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s2.loli.net/2022/03/30/3HjNstzRKQGobpE.jpg">
+<meta property="article:published_time" content="2022-03-30T02:49:08.000Z">
+<meta property="article:modified_time" content="2022-03-30T03:01:07.574Z">
+<meta property="article:author" content="Kirby">
+<meta property="article:tag" content="fms">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://s2.loli.net/2022/03/30/3HjNstzRKQGobpE.jpg">
+  
+  
+  <title>FMS日志 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"|","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('https://s2.loli.net/2022/03/29/2GB8Mr5JdVbuLvP.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="FMS日志">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-03-30 10:49" pubdate>
+        2022年3月30日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      5.1k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      43 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">FMS日志</h1>
+            
+            <div class="markdown-body">
+              <ul>
+<li><h1 id="技术选型"><a href="#技术选型" class="headerlink" title="技术选型"></a>技术选型</h1></li>
+<li><p>BACKEND: SpringBoot(2.5.1), Mysql(8.0), Redis …</p>
+</li>
+<li><p>FRONTEND: EAdmin, jq,表格组件(douyin上的) (node -v 11.9.0 npm -v 6.5.0 gulp -v 3.9.1)</p>
+</li>
+<li><h4 id="前端模板"><a href="#前端模板" class="headerlink" title="前端模板"></a>前端模板</h4><p>#+BEGIN_PINNED<br><a target="_blank" rel="noopener" href="https://github.com/iview/iview-admin">https://github.com/iview/iview-admin</a> </p>
+<ol>
+<li><a target="_blank" rel="noopener" href="http://www.eadmin.com.cn/#./doc/start/%E6%A6%82%E8%BF%B0.html#frame">http://www.eadmin.com.cn/#./doc/start/%E6%A6%82%E8%BF%B0.html#frame</a></li>
+<li><a target="_blank" rel="noopener" href="https://gitee.com/erupt/erupt">https://gitee.com/erupt/erupt</a><br>#+END_PINNED</li>
+</ol>
+</li>
+<li><h4 id="前端文档"><a href="#前端文档" class="headerlink" title="前端文档"></a>前端文档</h4></li>
+<li><p>#+BEGIN_PINNED<br><a target="_blank" rel="noopener" href="https://lison16.github.io/iview-admin-doc/">https://lison16.github.io/iview-admin-doc/</a></p>
+<ol>
+<li><a target="_blank" rel="noopener" href="http://www.eadmin.com.cn/#./doc/start/%E5%AE%89%E8%A3%85.html#frame">http://www.eadmin.com.cn/#./doc/start/%E5%AE%89%E8%A3%85.html#frame</a><br>#+END_PINNED</li>
+</ol>
+</li>
+<li><h1 id="EAdmin注意"><a href="#EAdmin注意" class="headerlink" title="EAdmin注意"></a>EAdmin注意</h1><p>node -v 11.9.0<br>npm -v 6.5.0<br>gulp -v 3.9.1<br>主文件位于dist<br>导航栏文件位于 dist/static/js/data/nav.js</p>
+<p>#+BEGIN_TIP<br>当心配置<br>// API接口返回的code码的字段名<br>   code_field   : ‘code’,<br>   // API接口返回代表成功的code码的值<br>   code_success : 100,<br>   // API接口返回的处理结果内容的字段名<br>   msg_field    : ‘msg’,<br>   // API接口返回的数据体的字段名<br>   data_field   : ‘data’<br>#+END_TIP</p>
+<p>前端消息返回拦截处，主要是消息提醒msg</p>
+<figure class="highlight js"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></div></td><td class="code"><pre><code class="hljs js"><span class="hljs-attr">E</span>:\p\eadmin\src\js\framework\eadmin\<span class="hljs-number">1.0</span><span class="hljs-number">.1</span>\eadmin.<span class="hljs-property">js</span>:<br><span class="hljs-number">751</span>                  <span class="hljs-keyword">return</span>;<br><span class="hljs-number">752</span>              &#125;<br><span class="hljs-number">753</span>:             <span class="hljs-keyword">let</span> msg = <span class="hljs-string">&#x27;&#x27;</span>;<br><span class="hljs-number">754</span>:             <span class="hljs-keyword">if</span> (data[<span class="hljs-variable language_">module</span>.<span class="hljs-property">conf</span>.<span class="hljs-property">http</span>.<span class="hljs-property">msg_field</span>] != <span class="hljs-literal">undefined</span>)<br><span class="hljs-number">755</span>:                 msg = data[<span class="hljs-variable language_">module</span>.<span class="hljs-property">conf</span>.<span class="hljs-property">http</span>.<span class="hljs-property">msg_field</span>];<br><span class="hljs-number">756</span>              <span class="hljs-comment">// 执行失败</span><br><span class="hljs-number">757</span>              <span class="hljs-keyword">if</span> (data[<span class="hljs-variable language_">module</span>.<span class="hljs-property">conf</span>.<span class="hljs-property">http</span>.<span class="hljs-property">code_field</span>] != <span class="hljs-variable language_">module</span>.<span class="hljs-property">conf</span>.<span class="hljs-property">http</span>.<span class="hljs-property">code_success</span>)<br><span class="hljs-number">758</span>              &#123;<br><span class="hljs-number">759</span>:                 <span class="hljs-keyword">if</span> (msg == <span class="hljs-string">&#x27;&#x27;</span>) msg = <span class="hljs-string">&#x27;操作执行失败&#x27;</span>;<br><span class="hljs-number">760</span>                  <span class="hljs-title class_">Message</span>.<span class="hljs-title function_">error</span>(&#123;<br><span class="hljs-number">761</span>:                     content : msg<br><span class="hljs-number">762</span>                  &#125;);<br><span class="hljs-number">763</span>                  <span class="hljs-keyword">if</span> (_.<span class="hljs-title function_">isFunction</span>(param.<span class="hljs-property">error</span>))<br>...<br><span class="hljs-number">771</span>                  <span class="hljs-keyword">return</span>;<br><span class="hljs-number">772</span>              &#125;<br><span class="hljs-number">773</span>:             msg = msg || <span class="hljs-string">&#x27;操作执行成功&#x27;</span>;<br><span class="hljs-number">774</span>              <span class="hljs-comment">// 提示</span><br><span class="hljs-number">775</span>:             <span class="hljs-keyword">let</span> conf = &#123;content : msg&#125;;<br><span class="hljs-number">776</span>              <span class="hljs-keyword">if</span> (_.<span class="hljs-title function_">isFunction</span>(param.<span class="hljs-property">then</span>))<br><span class="hljs-number">777</span>              &#123;<br>...<br><span class="hljs-number">798</span>                      <span class="hljs-title class_">Notice</span>.<span class="hljs-title function_">success</span>(&#123;<br><span class="hljs-number">799</span>                          title : <span class="hljs-string">&#x27;消息提醒&#x27;</span>,<br><span class="hljs-number">800</span>:                         desc  : msg<br><span class="hljs-number">801</span>                      &#125;);<br><span class="hljs-number">802</span>                      <span class="hljs-keyword">if</span> (conf.<span class="hljs-property">callback</span> != <span class="hljs-literal">undefined</span>) <br>...<br><span class="hljs-number">805</span>                  <span class="hljs-keyword">case</span> <span class="hljs-string">&#x27;message&#x27;</span>:<br><span class="hljs-number">806</span>                      <span class="hljs-title class_">Message</span>.<span class="hljs-title function_">success</span>(&#123;<br><span class="hljs-number">807</span>:                         content : msg<br><span class="hljs-number">808</span>                      &#125;);<br><span class="hljs-number">809</span>                      <span class="hljs-keyword">if</span> (conf.<span class="hljs-property">callback</span> != <span class="hljs-literal">undefined</span>) <br><br></code></pre></td></tr></table></figure>
+<blockquote>
+<p>实在是一个大坑  ！！！！  注意127.0.0.1:3000和localhost:3000的区别  要么使用127，要么使用localhost，或者在hostname里加上一个域名指向，太痛苦了，还要前后端配置Access-Control-Allow-Origin，两者并不兼容，是不一样的！！ :(<br>前后端一起写真是太痛苦了 😭</p>
+</blockquote>
+</li>
+<li><h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1></li>
+<li><p>当前，由于迅速发展的科学技术，尤其是计算机技术的发展，使人们的财务管理已经发展到信息化管理层面，但是对一些企业，尤其是个体经营者来说，财务管理的信息化意识还处于较低水平，其中的大多数对财务管理还是依靠手工记账的方式，为了解决这个问题，本文针对企业对财务管理的实际需求，研究开发出一个应用于个体及中小型企业的财务管理软件。 本文首先总结了目前中小型企业的财务管理存在的问题，其次对一些大中型财务管理软件是如何设计的进行了认真的分析，最后研发了一套适用于中小企业的财务软件。我们根据中小型企业对其内部财务进行管理的要求，总结了相对客观的结论，即如今的中小企业在财务管理方面比较凌乱。</p>
+</li>
+<li></li>
+<li><h1 id="设计模型参考"><a href="#设计模型参考" class="headerlink" title="设计模型参考"></a>设计模型参考</h1></li>
+<li><p><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1677971">https://cloud.tencent.com/developer/article/1677971</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="http://www.woshipm.com/pd/2894199.html">http://www.woshipm.com/pd/2894199.html</a><br><kbd>设计参考方案</kbd></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><code class="hljs java">企业财务管理系统主要用于实现公司的财务管理，基本功能包括：系统登录、部门信息管理、员工信息管理、资产、经营、费用信息管理等。本系统结构如下：<br><br>（<span class="hljs-number">1</span>）职工端：<br><br>    登录模块：登录功能；<br><br>        个人信息模块：可修改个人的信息；<br><br>    个人工资模块：可查阅自己的工资；<br><br>    公司资产模块：可查看公司的资产信息；<br><br>    公司经营模块：可查看公司的经营信息；<br><br>    公司费用模块：可查看公司的费用信息；<br><br>        年终资产模块：可查看公司的总资产信息；<br><br>（<span class="hljs-number">2</span>）超级管理员端：<br><br>    登录模块：实现管理员登录功能；<br><br>    个人信息模块：可修改个人的信息；<br><br>    部门信息管理模块：实现部门的增加、修改、删除、查看功能；<br><br>    职工信息管理模块：实现职工信息的增加、修改、删除、查看功能；<br><br>    职工工资管理模块：实现职工工资的增加、修改、查看功能；<br><br>    资产类别管理模块：实现资产类别的增加、删除、查看功能；<br><br>    资产信息管理模块：实现资产信息的增加、查看功能；<br><br>    经营信息管理模块：实现经营信息的增加、查看功能；<br><br>    费用信息管理模块：实现费用信息的增加、查看功能；<br><br>    年终资产分析模块：实现公司总资产的查看功能<br><br></code></pre></td></tr></table></figure></li>
+<li><h1 id="课题简介"><a href="#课题简介" class="headerlink" title="课题简介"></a>课题简介</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-number">1</span>）题目来源：传统财务管理模式下，财务管理工作存在如信息量较大、运算难度大等问题，财务工作人员需要进行反复运算、多次制作财务报表，从而导致核算延迟、出现误差等问题，严重影响工作效率。基于信息技术的企业财务管理信息化是时代发展的必然，并在财务管理中发挥着重要的作用。在大数据背景下，引进大数据技术理念，改变传统财务管理模式，打造企业内外发展大数据财务管理信息系统，提高企业财务管理工作效率，无疑是创新企业财务管理措施的必然。 <br><br><span class="hljs-number">2</span>）主要工作内容：公司财务管理系统，侧重于财务计划、分析与预测，其具体内容为：根据财务分析结果制定下期的财务预算与计划；提供查询功能，并通过差异数值的图形，显示绩效评估以及账户分析数据；作出关于资金的决策，包括资金的投放、筹集与管理。该部分属于 ERP 系统的核心环节，可以实现各生产过程的有机结合，也能够起到降低库存，提高运营效率的目的。 <br><br><span class="hljs-number">3</span>）参考资料 <br>[<span class="hljs-number">1</span>] 安科峰 . 数字化财务管理系统分析企业财务管理研究对策 [J]. 财经界 ,<span class="hljs-number">2020</span>(<span class="hljs-number">23</span>):<span class="hljs-number">139</span>-<span class="hljs-number">140.</span> <br>https:<span class="hljs-comment">//m.fx361.com/news/2020/1102/7661074.html</span><br><br><br>[<span class="hljs-number">2</span>] 雷淑琴 . 基于业财融合的煤炭企业财务管理系统框架的重构 [J]. 华北水利水电大学学报 ( 社会科学版 ),<span class="hljs-number">2019</span>,<span class="hljs-number">34</span>(<span class="hljs-number">05</span>):<span class="hljs-number">55</span>-<span class="hljs-number">57.</span> <br><br><br><br><br>[<span class="hljs-number">3</span>] 刘梅玲 , 朱学义 . 国外企业财务软件的发展历程——财务管理系统在从 MRP 到 ERP 发展过程中的演进 [J]. 中国管理信息化 ,<span class="hljs-number">2020</span>(<span class="hljs-number">04</span>):<span class="hljs-number">36</span>-<span class="hljs-number">39.</span> <br><br><br><br><br>[<span class="hljs-number">4</span>] 张继德 , 胡月 . 新常态下企业财务管理创新动因、初始条件与策略研究 [J]. 会计研究 ,<span class="hljs-number">2020</span>(08):<span class="hljs-number">58</span>-<span class="hljs-number">63</span>+<span class="hljs-number">97.</span> [<span class="hljs-number">5</span>] 邱玉莲，钱苏维.大数据环境下企业财务管理信息系统应用探讨[J].财会通讯，<span class="hljs-number">2017</span>，No<span class="hljs-number">.735</span>（<span class="hljs-number">7</span>）：<span class="hljs-number">105</span>-<span class="hljs-number">106.</span><br></code></pre></td></tr></table></figure></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs java">- CAJ to PDF chrome extension SpeedPDF https:<span class="hljs-comment">//speedpdf.com/zh-cn/convert/caj-to-pdf?ch=chrome-web</span><br>- https:<span class="hljs-comment">//libredata.cjlu.edu.cn/</span><br>- https:<span class="hljs-comment">//cjlu.metaersp.com/personalIndex</span><br>- [<span class="hljs-number">1</span>] 数字化财务管理系统分析企业财务管理研究对策<br>- https:<span class="hljs-comment">//libredata.cjlu.edu.cn/s/net/cnki/kns/G.https/kcms/detail/detail.aspx?dbcode=CJFD&amp;dbname=CJFDLAST2020&amp;filename=CJJI202023088&amp;uniplatform=NZKPT&amp;v=dv-k_jU2mJRT2C1BFSAIzpNaucH52rDGiQaAdiEJeuuDgfKBkoPWkMCu8_giUzPv</span><br>- [<span class="hljs-number">2</span>]基于业财融合的煤炭企业财务管理系统框架的重构<br>- https:<span class="hljs-comment">//libredata.cjlu.edu.cn/s/net/cnki/kns/G.https/KXReader/Detail?invoice=diI2xADN5J7LBxp8DpnOFwj%2BbIQZc0omeFDMX1OTJKPwEH5bdcVfeB7yhQzAiIhX5ArkGkVRC8iFWWPBzTem2%2Fzre9e8IJlAYVz5xq0TPl1IMPS3CWRiJrmz1qBBOnDUlwkI3yUxYhU8zUXJBXbVfjP%2Bgn%2F48JjrXRLbjqiZlU4%3D&amp;DBCODE=CJFD&amp;FileName=SLSB201805014&amp;TABLEName=cjfdlast2018&amp;nonce=2CE7B6CFAEF84D27B9F8BBC8B8F0452C&amp;uid=&amp;TIMESTAMP=1640590597471</span><br>- [<span class="hljs-number">3</span>]国外企业财务软件的发展历程——财务管理系统在从 MRP 到 ERP 发展过程中的演进<br>- https:<span class="hljs-comment">//libredata.cjlu.edu.cn/s/net/cnki/kns/G.https/kcms/detail/detail.aspx?dbcode=CJFD&amp;dbname=CJFD2005&amp;filename=ZKDS20050400E&amp;uniplatform=NZKPT&amp;v=6Q4mLKy-A50i07GTVg8cRDouslGpGVWKwecEa80LPM-1lfV7QQJE_vOtrp-_TJ36</span><br>- [<span class="hljs-number">4</span>]新常态下企业财务管理创新动因、初始条件与策略研究<br>- https:<span class="hljs-comment">//libredata.cjlu.edu.cn/s/net/cnki/kns/G.https/kcms/detail/detail.aspx?dbcode=CJFD&amp;dbname=CJFDLAST2017&amp;filename=KJYJ201608008&amp;uniplatform=NZKPT&amp;v=0GBV5CGwgkj_MMNWo9ElZbqThZALcqG4HHJaDdOQW67CjDG1a60QvOi_zbfzYpPy</span><br><span class="hljs-number">1.</span> sci hub<br><span class="hljs-number">2.</span> www.ixuhesu.com/<br><span class="hljs-number">3.</span> http:<span class="hljs-comment">//www.oalib.com/</span><br></code></pre></td></tr></table></figure>
+
+<h1 id="FMS"><a href="#FMS" class="headerlink" title="FMS"></a>FMS</h1><h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><p>公司财务管理系统</p>
+<h4 id="主要研究了基于web的B-S架构下的公司财务管理系统的设计、分析、以及实现。"><a href="#主要研究了基于web的B-S架构下的公司财务管理系统的设计、分析、以及实现。" class="headerlink" title="主要研究了基于web的B/S架构下的公司财务管理系统的设计、分析、以及实现。"></a>主要研究了基于web的B/S架构下的公司财务管理系统的设计、分析、以及实现。</h4><blockquote>
+<p>结合大数据技术对公司财务进行管理，并侧重于对财务的计划、分析与预测，减少传统财务管理的弊端。主要对一下几方面进行研究：</p>
+</blockquote>
+<p><code>1.    研究传统财务管理存在的问题以及解决方案</code> </p>
+<p><code>2.    研究现有的系统所需要的开发技术以及收集整理必要的财务知识</code></p>
+<p><code>3.    通过大数据对财务数据进行分析，呈现可视化内容，展示实时数据，对财务进行分析、计划与预测</code></p>
+<p><code>4.    现有的系统所需要的开发技术以及必要的财务知识</code></p>
+<h3 id="模块信息"><a href="#模块信息" class="headerlink" title="模块信息"></a>模块信息</h3><p>包含应收账单，应付账单，财务预测，财务计划制定，财务用户，首页可视化模块</p>
+<p>菜单栏分为二种，用户和管理员</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/fms/">fms</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/03/29/Java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E6%8A%A5%E8%AD%A6%E6%B6%88%E6%81%AF%E5%8F%91%E9%80%81/">
+                        <span class="hidden-mobile">Java线程池报警消息发送</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'http://example.com/2022/03/30/FMS%E6%97%A5%E5%BF%97/';
+          this.page.identifier = '/2022/03/30/FMS%E6%97%A5%E5%BF%97/';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'cloud-hexo' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
