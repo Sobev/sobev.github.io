@@ -4,6 +4,25 @@
   
   
   <entry>
+    <title>CamPhish钓鱼-Illegal</title>
+    <link href="/2022/04/04/CamPhish%E9%92%93%E9%B1%BC-Illegal/"/>
+    <url>/2022/04/04/CamPhish%E9%92%93%E9%B1%BC-Illegal/</url>
+    
+    <content type="html"><![CDATA[<p>网站钓鱼</p><figure class="highlight bash"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> https://github.com/techchipnet/CamPhish.git<br></code></pre></td></tr></table></figure><h3 id="使用ngork访问网站"><a href="#使用ngork访问网站" class="headerlink" title="使用ngork访问网站"></a>使用ngork访问网站</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 根据需要安装不同版本  详情见官网 这里安装的是centos7下的ngrok</span><br>wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.tgz<br><span class="hljs-comment"># 解压</span><br>tar -xzvf ng....<br><span class="hljs-comment"># 将ngork放到CamPhsih的文件夹中 就不需要脚本安装</span><br><span class="hljs-comment"># 运行camphish</span><br>./camphish<br><span class="hljs-comment"># 设置ngork密钥</span><br>./ngrok authtoken ......................<br><span class="hljs-comment"># 启动服务</span><br>./camphish<br><span class="hljs-comment"># 选择 1 2 在输入youtube的视频id</span><br><span class="hljs-comment"># 此时网址会出现  等待🐟 上钩 会自动拍摄</span><br><span class="hljs-comment"># 。。。。。。。。。。。。。。。。。。。</span><br><span class="hljs-comment"># 。。。。。。。。。。。。。。。。。。。</span><br><span class="hljs-comment"># 等待</span><br></code></pre></td></tr></table></figure><h3 id="上钩"><a href="#上钩" class="headerlink" title="上钩"></a>上钩</h3><p><img src="https://s2.loli.net/2022/04/04/wJaxXLQcHoFEDmU.png" alt="image.png"></p><h3 id="获取到了图片"><a href="#获取到了图片" class="headerlink" title="获取到了图片"></a>获取到了图片</h3><p><img src="https://s2.loli.net/2022/04/04/G1xZji7hDJRSwcF.png" alt="image.png"></p>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>Illegal</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>DDOS TYPE[TCP]</title>
     <link href="/2022/04/02/DDOS-TYPE-TCP/"/>
     <url>/2022/04/02/DDOS-TYPE-TCP/</url>
