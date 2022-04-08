@@ -1,0 +1,509 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="https://s2.loli.net/2022/03/29/uGDbUvfzrdeO4PH.jpg">
+  <link rel="icon" href="https://s2.loli.net/2022/03/29/uGDbUvfzrdeO4PH.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Kirby">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="基于TCP协议的Socket调用过程 测试代码服务端 12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061626364656667686970&#x2F;* *  把从客户端读取到的一行数据的字符进行翻转，然后发送给客户端 *  当读取">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SOCKET Communication">
+<meta property="og:url" content="http://example.com/2022/04/08/SOCKET-Communication/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="基于TCP协议的Socket调用过程 测试代码服务端 12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061626364656667686970&#x2F;* *  把从客户端读取到的一行数据的字符进行翻转，然后发送给客户端 *  当读取">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Sobev/image-hosting@master/20220407/ai_art_030_by_kointheai_df33hn6.jpg">
+<meta property="article:published_time" content="2022-04-08T01:16:47.000Z">
+<meta property="article:modified_time" content="2022-04-08T02:18:58.070Z">
+<meta property="article:author" content="Kirby">
+<meta property="article:tag" content="socket">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/Sobev/image-hosting@master/20220407/ai_art_030_by_kointheai_df33hn6.jpg">
+  
+  
+  <title>SOCKET Communication - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"|","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('https://s2.loli.net/2022/03/29/2GB8Mr5JdVbuLvP.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="SOCKET Communication">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-04-08 09:16" pubdate>
+        2022年4月8日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      5.2k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      44 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">SOCKET Communication</h1>
+            
+            <div class="markdown-body">
+              <h3 id="基于TCP协议的Socket调用过程"><a href="#基于TCP协议的Socket调用过程" class="headerlink" title="基于TCP协议的Socket调用过程"></a>基于TCP协议的Socket调用过程</h3><p><img src="https://cdn.jsdelivr.net/gh/Sobev/image-hosting@master/20220407/socket-tcp.png" srcset="/img/loading.gif" lazyload></p>
+<p>测试代码<br>服务端</p>
+<figure class="highlight java"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></div></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/*</span><br><span class="hljs-comment"> *  把从客户端读取到的一行数据的字符进行翻转，然后发送给客户端</span><br><span class="hljs-comment"> *  当读取到over时，连接断开</span><br><span class="hljs-comment"> */</span><br> <br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">TcpService</span><br>&#123;<br>	<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span><br>	&#123;<br> <br>		<span class="hljs-keyword">try</span> &#123;<br>			<span class="hljs-type">ServerSocket</span> <span class="hljs-variable">server</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ServerSocket</span>(<span class="hljs-number">10002</span>);<br> <br>			<span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>) &#123;<br>				<span class="hljs-type">Socket</span> <span class="hljs-variable">socket</span> <span class="hljs-operator">=</span> server.accept();<br>				<span class="hljs-type">MyThread</span> <span class="hljs-variable">myThread</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">MyThread</span>(socket);<br>				myThread.start();<br>			&#125;<br>		&#125; <span class="hljs-keyword">catch</span> (IOException e) &#123;<br>			e.printStackTrace();<br>		&#125;<br>	&#125;<br>&#125;<br> <br><span class="hljs-keyword">class</span> <span class="hljs-title class_">MyThread</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Thread</span><br>&#123;<br>	<span class="hljs-keyword">private</span> Socket socket;<br> <br>	<span class="hljs-keyword">public</span> <span class="hljs-title function_">MyThread</span><span class="hljs-params">(Socket socket)</span><br>	&#123;<br>		<span class="hljs-built_in">this</span>.socket = socket;<br>	&#125;<br> <br>	<span class="hljs-meta">@Override</span><br>	<span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">run</span><span class="hljs-params">()</span><br>	&#123;<br>		<span class="hljs-keyword">try</span> &#123;<br>			<span class="hljs-type">BufferedReader</span> <span class="hljs-variable">bufferedReader</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BufferedReader</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">InputStreamReader</span>(socket.getInputStream()));<br>			<span class="hljs-type">BufferedWriter</span> <span class="hljs-variable">bufferedWriter</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BufferedWriter</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">OutputStreamWriter</span>(socket.getOutputStream()));<br>			<span class="hljs-type">String</span> <span class="hljs-variable">line</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;<br>			<span class="hljs-keyword">while</span> ((line = bufferedReader.readLine()) != <span class="hljs-literal">null</span>) &#123;<br>				<span class="hljs-keyword">if</span> (<span class="hljs-string">&quot;over&quot;</span>.equalsIgnoreCase(line)) &#123;<br>					<span class="hljs-keyword">break</span>;<br>				&#125;<br> <br>				<span class="hljs-comment">// 字符翻转的操作</span><br>				<span class="hljs-type">char</span>[] chs = line.toCharArray();<br> <br>				<span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; i &lt; chs.length / <span class="hljs-number">2</span>; i++) &#123;<br>					<span class="hljs-type">char</span> <span class="hljs-variable">ch</span> <span class="hljs-operator">=</span> chs[i];<br>					chs[i] = chs[chs.length - <span class="hljs-number">1</span> - i];<br>					chs[chs.length - <span class="hljs-number">1</span> - i] = ch;<br>				&#125;<br> <br>				bufferedWriter.write(chs);<br>				bufferedWriter.newLine();<br>				bufferedWriter.flush();<br>			&#125;<br>		&#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>			e.printStackTrace();<br>		&#125; <span class="hljs-keyword">finally</span> &#123;<br>			<span class="hljs-keyword">try</span> &#123;<br>				socket.close();<br>			&#125; <span class="hljs-keyword">catch</span> (IOException e) &#123;<br>				e.printStackTrace();<br>			&#125;<br>		&#125;<br> <br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>客户端</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">TcpClient</span><br>&#123;<br>	<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span><br>	&#123;<br>		<span class="hljs-type">Socket</span> <span class="hljs-variable">socket</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;<br>		<span class="hljs-type">Scanner</span> <span class="hljs-variable">scanner</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;<br>		<span class="hljs-keyword">try</span> &#123;<br>			socket = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Socket</span>(<span class="hljs-string">&quot;localhost&quot;</span>, <span class="hljs-number">10002</span>);<br>			<span class="hljs-type">BufferedReader</span> <span class="hljs-variable">bufferedReader</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BufferedReader</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">InputStreamReader</span>(socket.getInputStream()));<br>			<span class="hljs-type">BufferedWriter</span> <span class="hljs-variable">bufferedWriter</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BufferedWriter</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">OutputStreamWriter</span>(socket.getOutputStream()));<br> <br>			scanner = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Scanner</span>(System.in);<br>			<span class="hljs-type">String</span> <span class="hljs-variable">line</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;<br>			<span class="hljs-keyword">while</span> ((line = scanner.nextLine()) != <span class="hljs-literal">null</span>) &#123;<br>				bufferedWriter.write(line);<br>				bufferedWriter.newLine();<br>				bufferedWriter.flush();<br>				line = bufferedReader.readLine();<br>				<span class="hljs-keyword">if</span> (line == <span class="hljs-literal">null</span>) &#123;<br>					<span class="hljs-keyword">break</span>;<br>				&#125;<br>				System.out.println(line);<br>			&#125;<br>		&#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>			e.printStackTrace();<br>		&#125; <span class="hljs-keyword">finally</span> &#123;<br>			<span class="hljs-keyword">try</span> &#123;<br>				<span class="hljs-keyword">if</span> (socket != <span class="hljs-literal">null</span>) &#123;<br>					socket.close();<br>				&#125;<br>			&#125; <span class="hljs-keyword">catch</span> (IOException e) &#123;<br>				e.printStackTrace();<br>			&#125;<br>			<span class="hljs-keyword">if</span> (scanner != <span class="hljs-literal">null</span>) &#123;<br>				scanner.close();<br>			&#125;<br>		&#125;<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+<h3 id="基于UDP协议的Socket调用过程"><a href="#基于UDP协议的Socket调用过程" class="headerlink" title="基于UDP协议的Socket调用过程"></a>基于UDP协议的Socket调用过程</h3><p>对于 UDP 来讲，过程有些不一样。UDP 是没有连接的，所以不需要三次握手，也就不需要调用 listen 和 connect，但是，UDP 的的交互仍然需要 IP 和端口号，因而也需要 bind。UDP 是没有维护连接状态的，因而不需要每对连接建立一组 Socket，而是只要有一个 Socket，就能够和多个客户端通信。也正是因为没有连接状态，每次通信的时候，都调用 sendto 和 recvfrom，都可以传入 IP 地址和端口。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Sobev/image-hosting@master/20220407/socket-udp.png" srcset="/img/loading.gif" lazyload></p>
+<p>DatagramSocket 表示通信的一端，可以发送、接收数据包</p>
+<p>DatagramPacket 数据包，理论上一个数据包可包含的数据量最多为65535字节</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">UDPSend</span><br>&#123;<br>	<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> IOException<br>	&#123;<br>		<span class="hljs-type">DatagramSocket</span> <span class="hljs-variable">sendSocket</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">DatagramSocket</span>(<span class="hljs-number">10003</span>);<br>		<span class="hljs-type">byte</span>[] data = <span class="hljs-string">&quot;hello&quot;</span>.getBytes();<br>		<span class="hljs-type">DatagramPacket</span> <span class="hljs-variable">packet</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">DatagramPacket</span>(data, data.length, InetAddress.getLocalHost(), <span class="hljs-number">10004</span>);<br>		sendSocket.send(packet);<br>		sendSocket.close();<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">UDPReceive</span><br>&#123;<br>	<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> IOException<br>	&#123;<br>		<span class="hljs-type">DatagramSocket</span> <span class="hljs-variable">receiveSocket</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">DatagramSocket</span>(<span class="hljs-number">10004</span>);<br>		<span class="hljs-type">byte</span>[] buff = <span class="hljs-keyword">new</span> <span class="hljs-title class_">byte</span>[<span class="hljs-number">1024</span>];<br>		<span class="hljs-type">DatagramPacket</span> <span class="hljs-variable">packet</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">DatagramPacket</span>(buff, buff.length);<br>		receiveSocket.receive(packet);<br>		<span class="hljs-type">int</span> <span class="hljs-variable">len</span> <span class="hljs-operator">=</span> packet.getLength();<br>		System.out.println(<span class="hljs-keyword">new</span> <span class="hljs-title class_">String</span>(buff, <span class="hljs-number">0</span>, len));<br>		receiveSocket.close();<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+<h3 id="Socket底层参数"><a href="#Socket底层参数" class="headerlink" title="Socket底层参数"></a>Socket底层参数</h3><p><code>#include sockfd = socket(int socket_family, int socket_type, int protocol);</code></p>
+<p>/* 创建TCP socket*/</p>
+<p>sockfd = socket(AF_INET, SOCK_STREAM, 0);</p>
+<p>/* 创建UDP socket*/</p>
+<p>sockfd = socket(AF_INET, SOCK_DGRAM, 0);</p>
+<p>为何用AF_INET, SOCK_STREAM或SOCK_DGRAM, 第三个参数为何为0</p>
+<h4 id="第一个参数"><a href="#第一个参数" class="headerlink" title="第一个参数"></a>第一个参数</h4><p>  第一个参数表示创建的socket所属的地址簇或者协议簇，取值以AF或者PF开头定义在(includelinuxsocket.h)，实际使用中并没有区别(有两个不同的名字只是因为是历史上的设计原因)。最常用的取值有AF_INET,AF_PACKET,AF_UNIX等。AF_UNIX用于主机内部进程间通信，本文暂且不谈。AF_INET与AF_PACKET的区别在于使用前者只能看到IP层以上的东西，而后者可以看到链路层的信息。</p>
+<p>网络报文的分类。如下图所示：Ethernet II帧是应用最为广泛的帧类型(当然也有像PPP这样的其他链路帧类型)。Ethernet II帧内部，又可大致分为IP报文和其他报文。我们熟悉的TCP或者UDP报文都属于IP报文。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Sobev/image-hosting@master/20220407/d6eb2c35684d602dd9897191c43160de.jpg" srcset="/img/loading.gif" lazyload></p>
+<p>AF_INET是与IP报文对应的，而AF_PACKET则是与Ethernet II报文对应的。AF_INET创建的套接字称为inet socket，而AF_PACKET创建的套接字称为packet socket</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Sobev/image-hosting@master/20220407/9f88eb01f8897777c9cde27acbc8bfbc.jpg" srcset="/img/loading.gif" lazyload></p>
+<h4 id="第二个参数"><a href="#第二个参数" class="headerlink" title="第二个参数"></a>第二个参数</h4><p>第一个参数family会影响第二个参数socket_type和第三个参数protocol取值范围<br>第二个参数socket_type表示套接字类型。它的取值不多，常见的就以下三种</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">enum</span> <span class="hljs-title">sock_type</span> &#123;</span><br><br>SOCK_STREAM = <span class="hljs-number">1</span>, <span class="hljs-comment">/* stream (connection) socket */</span><br><br>SOCK_DGRAM = <span class="hljs-number">2</span>, <span class="hljs-comment">/* datagram (conn.less) socket */</span><br><br>SOCK_RAW = <span class="hljs-number">3</span>, <span class="hljs-comment">/* raw socket */</span><br><br>&#125;;<br></code></pre></td></tr></table></figure>
+<h4 id="第三个参数protocol表示套接字上报文的协议"><a href="#第三个参数protocol表示套接字上报文的协议" class="headerlink" title="第三个参数protocol表示套接字上报文的协议"></a>第三个参数protocol表示套接字上报文的协议</h4><p>对于AF_INET地址簇，protocol的取值范围是如 IPPROTO_TCP IPPROTO_UDP IPPROTO_ICMP 这样的IP报文协议类型，或者IPPROTO_IP = 0 这个特殊值</p>
+<p>对于AF_PACKET地址簇，protocol的取值范围是 ETH_P_IP ETH_P_ARP这样的以太帧协议类型。</p>
+<p>限制<br>每一个inet socket只能收发一种IP协议类型的报文，这是在套接字创建的时候就决定的(protocol参数)，比如TCP套接字是不能收发UDP报文的，反之也是一样。并且，protocol的值还受到socket_type的限制，不匹配的取值会导致套接字创建操作会返回失败。</p>
+<p>/* 错误取值，返回失败 */</p>
+<p><code>sockfd = socket(AF_INET, SOCK_DGRAM, IPPROTO_TCP);</code></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Sobev/image-hosting@master/20220407/6083c0c50c5a9107d8bdbd81f47398c1.jpg" srcset="/img/loading.gif" lazyload></p>
+<p>第三个参数为0时：<br>  IPPROTO_IP的值为0, 在用户使用0作为创建套接字的第三个参数时，会匹配到该链表上的第一个协议，这正是创建TCP或者UDP套接字时，第三个参数可以为0的原因, 0表示由内核自动选择</p>
+<h4 id="对于Inet-Socket-TCP报文分解"><a href="#对于Inet-Socket-TCP报文分解" class="headerlink" title="对于Inet Socket  TCP报文分解"></a>对于Inet Socket  TCP报文分解</h4><p><code>packet = IP Header + TCP Header + Payload</code></p>
+<p>使用SOCK_STREAM时，只需提供Payload，其他的由内核组装而成</p>
+<p>使用SOCK_RAW，为应用提供更底层的控制力<br><code>int s = socket (AF_INET, SOCK_RAW, IPPROTO_TCP);</code><br>更为原始的TCP套接字，发送数据时 需要提供Payload和TCP Header，而IP Header依然由内核协议栈自动组装。</p>
+<p>使用IPPROTO_RAW, 手动组装全部<br><code>int s = socket (AF_INET, SOCK_RAW, IPPROTO_RAW);</code><br>或者<br>s.setsockopt(IPPROTO_IP, IP_HDRINCL, 1)</p>
+<p>自行创建ip和tcp首部</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">_genrate_syn</span>(<span class="hljs-params">self</span>) -&gt; <span class="hljs-built_in">bytes</span>:<br>    ip: IP = IP()<br>    ip.set_ip_src(getMyIPAddress())<br>    ip.set_ip_dst(self._target[<span class="hljs-number">0</span>])<br>    tcp: TCP = TCP()<br>    tcp.set_SYN()<br>    tcp.set_th_dport(self._target[<span class="hljs-number">1</span>])<br>    tcp.set_th_sport(randint(<span class="hljs-number">1</span>, <span class="hljs-number">65535</span>))<br>    ip.contains(tcp)<br>    <span class="hljs-keyword">return</span> ip.get_packet()<br></code></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_39934302/article/details/116863049"> ref </a></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/socket/">socket</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/04/04/CamPhish%E9%92%93%E9%B1%BC-Illegal/">
+                        <span class="hidden-mobile">CamPhish钓鱼-Illegal</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'http://example.com/2022/04/08/SOCKET-Communication/';
+          this.page.identifier = '/2022/04/08/SOCKET-Communication/';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'cloud-hexo' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
