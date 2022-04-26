@@ -6,6 +6,7 @@ import select
 
 SOCKS_VERSION = 5
 
+#https://github.com/shikanon/socks5proxy/wiki 中文SOCKS5参考地址
 
 class Proxy:
     def __init__(self):
@@ -15,14 +16,25 @@ class Proxy:
     def handle_client(self, connection):
         # greeting header
         # read and unpack 2 bytes from a client
+        # VER是SOCKS版本，这里应该是0x05；
+        # NMETHODS是METHODS部分的长度；
+
         version, nmethods = connection.recv(2)
         print("version: {}, nmethods: {}".format(version, nmethods))
         # get available methods [0, 1, 2]
+        # METHODS是客户端支持的认证方式列表，每个方法占1字节。当前的定义是：
+        # 0x00 不需要认证
+        # 0x01 GSSAPI
+        # 0x02 用户名、密码认证
+        # 0x03 - 0x7F由IANA分配（保留）
+        # 0x80 - 0xFE为私人方法保留
+        # 0xFF 无可接受的方法
         methods = self.get_available_methods(nmethods, connection)
         print("available methods: {}".format(methods))
         # accept only USERNAME/PASSWORD auth
         if 2 not in set(methods):
             # close connection
+            print("2 not in method")
             connection.close()
             return
 
@@ -158,4 +170,4 @@ class Proxy:
 
 if __name__ == "__main__":
     proxy = Proxy()
-    proxy.run("10.0.4.15", 18300)
+    proxy.run("127.0.0.1", 18300)
