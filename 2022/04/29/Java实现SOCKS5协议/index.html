@@ -16,16 +16,16 @@
   <meta name="author" content="Kirby">
   <meta name="keywords" content="">
   
-    <meta name="description" content="SOCKS5协议过程 协商包含协议协商和认证 协商认证方法在这个阶段，客户端向socks5发起请求，内容如下: +—-+———-+———-+|VER | NMETHODS | METHODS  |+—-+———-+———-+| 1  |    1     | 1 to 255 |+—-+———-+———-+上方的数字表示字节数，下面的表格同理，不再赘述 VER: 协议版本，socks5为0x05">
+    <meta name="description" content="SOCKS5协议过程 协商包含协议协商和认证 协商认证方法在这个阶段，客户端向socks5发起请求，内容如下: 12345+----+----------+----------+|VER | NMETHODS | METHODS  |+----+----------+----------+| 1  |    1     | 1 to 255 |+----+----------+----------">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java实现SOCKS5协议">
 <meta property="og:url" content="http://example.com/2022/04/29/Java%E5%AE%9E%E7%8E%B0SOCKS5%E5%8D%8F%E8%AE%AE/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="SOCKS5协议过程 协商包含协议协商和认证 协商认证方法在这个阶段，客户端向socks5发起请求，内容如下: +—-+———-+———-+|VER | NMETHODS | METHODS  |+—-+———-+———-+| 1  |    1     | 1 to 255 |+—-+———-+———-+上方的数字表示字节数，下面的表格同理，不再赘述 VER: 协议版本，socks5为0x05">
+<meta property="og:description" content="SOCKS5协议过程 协商包含协议协商和认证 协商认证方法在这个阶段，客户端向socks5发起请求，内容如下: 12345+----+----------+----------+|VER | NMETHODS | METHODS  |+----+----------+----------+| 1  |    1     | 1 to 255 |+----+----------+----------">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/Sobev/image-hosting@master/20220407/df4ee0c-27689cb6-ed4d-495c-800a-547110e564b2.png">
 <meta property="article:published_time" content="2022-04-29T00:58:32.000Z">
-<meta property="article:modified_time" content="2022-04-29T01:27:18.160Z">
+<meta property="article:modified_time" content="2022-04-29T01:30:03.072Z">
 <meta property="article:author" content="Kirby">
 <meta property="article:tag" content="SOCKS5">
 <meta name="twitter:card" content="summary_large_image">
@@ -199,7 +199,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      2.2k 字
+      2.5k 字
     </span>
   
 
@@ -208,7 +208,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      19 分钟
+      21 分钟
     </span>
   
 
@@ -243,7 +243,8 @@
               <h1 id="SOCKS5协议过程"><a href="#SOCKS5协议过程" class="headerlink" title="SOCKS5协议过程"></a>SOCKS5协议过程</h1><p><img src="https://cdn.jsdelivr.net/gh/Sobev/image-hosting@master/20220407/client-socks5_f.jpg" srcset="/img/loading.gif" lazyload></p>
 <h2 id="协商"><a href="#协商" class="headerlink" title="协商"></a>协商</h2><p>包含协议协商和认证</p>
 <h3 id="协商认证方法"><a href="#协商认证方法" class="headerlink" title="协商认证方法"></a>协商认证方法</h3><p>在这个阶段，客户端向socks5发起请求，内容如下:</p>
-<p>+—-+———-+———-+<br>|VER | NMETHODS | METHODS  |<br>+—-+———-+———-+<br>| 1  |    1     | 1 to 255 |<br>+—-+———-+———-+<br>上方的数字表示字节数，下面的表格同理，不再赘述</p>
+<figure class="highlight java"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div></td><td class="code"><pre><code class="hljs java">+----+----------+----------+<br>|VER | NMETHODS | METHODS  |<br>+----+----------+----------+<br>| <span class="hljs-number">1</span>  |    <span class="hljs-number">1</span>     | <span class="hljs-number">1</span> to <span class="hljs-number">255</span> |<br>+----+----------+----------+<br></code></pre></td></tr></table></figure>
+<p>上方的数字表示字节数，下面的表格同理，不再赘述</p>
 <p>VER: 协议版本，socks5为0x05</p>
 <p>NMETHODS: 支持认证的方法数量</p>
 <p>METHODS: 对应NMETHODS，NMETHODS的值为多少，METHODS就有多少个字节。RFC预定义了一些值的含义，内容如下:</p>
@@ -256,18 +257,22 @@
 <li>X’FF’ NO ACCEPTABLE METHODS</li>
 </ul>
 <p>socks5服务器需要选中一个METHOD返回给客户端，格式如下:</p>
-<p>+—-+——–+<br>|VER | METHOD |<br>+—-+——–+<br>| 1  |   1    |<br>+—-+——–+</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java">+----+--------+<br>|VER | METHOD |<br>+----+--------+<br>| <span class="hljs-number">1</span>  |   <span class="hljs-number">1</span>    |<br>+----+--------+<br></code></pre></td></tr></table></figure>
+
 <p>当METHOD为0x00 跳过认证  直接发送请求<br>为 0xFF则断开连接</p>
-<h3 id="认证"><a href="#认证" class="headerlink" title="认证"></a>认证</h3><p>如果需要认证，客户端向socks5服务器发起一个认证请求，这里以0x02的认证方式举例:<br>+—-+——+———-+——+———-+<br>|VER | ULEN |  UNAME   | PLEN |  PASSWD  |<br>+—-+——+———-+——+———-+<br>| 1  |  1   | 1 to 255 |  1   | 1 to 255 |<br>+—-+——+———-+——+———-+</p>
+<h3 id="认证"><a href="#认证" class="headerlink" title="认证"></a>认证</h3><p>如果需要认证，客户端向socks5服务器发起一个认证请求，这里以0x02的认证方式举例:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java">+----+------+----------+------+----------+<br>|VER | ULEN |  UNAME   | PLEN |  PASSWD  |<br>+----+------+----------+------+----------+<br>| <span class="hljs-number">1</span>  |  <span class="hljs-number">1</span>   | <span class="hljs-number">1</span> to <span class="hljs-number">255</span> |  <span class="hljs-number">1</span>   | <span class="hljs-number">1</span> to <span class="hljs-number">255</span> |<br>+----+------+----------+------+----------+<br></code></pre></td></tr></table></figure>
+
 <p>VER: 版本，通常为0x01</p>
 <p>ULEN: 用户名长度</p>
 <p>UNAME: 对应用户名的字节数据</p>
 <p>PLEN: 密码长度</p>
 <p>PASSWD: 密码对应的数据</p>
 <p>socks5服务器收到客户端的认证请求后，解析内容，验证信息是否合法，然后给客户端响应结果。响应格式如下:</p>
-<p>+—-+——–+<br>|VER | STATUS |<br>+—-+——–+<br>| 1  |   1    |<br>+—-+——–+</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java">+----+--------+<br>|VER | STATUS |<br>+----+--------+<br>| <span class="hljs-number">1</span>  |   <span class="hljs-number">1</span>    |<br>+----+--------+<br></code></pre></td></tr></table></figure>
 <p>STATUS字段如果为0x00表示认证成功，其他的值为认证失败。当客户端收到认证失败的响应后，它将会断开连接。</p>
-<h2 id="请求"><a href="#请求" class="headerlink" title="请求"></a>请求</h2><p>顺利通过协商阶段后，客户端向socks5服务器发起请求细节，格式如下:<br>+—-+—–+——-+——+———-+———-+<br>|VER | CMD |  RSV  | ATYP | DST.ADDR | DST.PORT |<br>+—-+—–+——-+——+———-+———-+<br>| 1  |  1  | X’00’ |  1   | Variable |    2     |<br>+—-+—–+——-+——+———-+———-+</p>
+<h2 id="请求"><a href="#请求" class="headerlink" title="请求"></a>请求</h2><p>顺利通过协商阶段后，客户端向socks5服务器发起请求细节，格式如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java">+----+-----+-------+------+----------+----------+<br>|VER | CMD |  RSV  | ATYP | DST.ADDR | DST.PORT |<br>+----+-----+-------+------+----------+----------+<br>| <span class="hljs-number">1</span>  |  <span class="hljs-number">1</span>  | X<span class="hljs-string">&#x27;00&#x27;</span> |  <span class="hljs-number">1</span>   | Variable |    <span class="hljs-number">2</span>     |<br>+----+-----+-------+------+----------+----------+<br></code></pre></td></tr></table></figure>
 <ul>
 <li>VER 版本号，socks5的值为0x05</li>
 <li>CMD<ul>
@@ -287,7 +292,8 @@
 </li>
 </ul>
 <p>socks5服务器收到客户端的请求后，需要返回一个响应，结构如下</p>
-<p>+—-+—–+——-+——+———-+———-+<br>|VER | REP |  RSV  | ATYP | BND.ADDR | BND.PORT |<br>+—-+—–+——-+——+———-+———-+<br>| 1  |  1  | X’00’ |  1   | Variable |    2     |<br>+—-+—–+——-+——+———-+———-+</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java">+----+-----+-------+------+----------+----------+<br>|VER | REP |  RSV  | ATYP | BND.ADDR | BND.PORT |<br>+----+-----+-------+------+----------+----------+<br>| <span class="hljs-number">1</span>  |  <span class="hljs-number">1</span>  | X<span class="hljs-string">&#x27;00&#x27;</span> |  <span class="hljs-number">1</span>   | Variable |    <span class="hljs-number">2</span>     |<br>+----+-----+-------+------+----------+----------+<br></code></pre></td></tr></table></figure>
+
 <p>VER socks版本，这里为0x05<br>REP Relay field,内容取值如下<br>X’00’ succeeded<br>X’01’ general SOCKS server failure<br>X’02’ connection not allowed by ruleset<br>X’03’ Network unreachable<br>X’04’ Host unreachable<br>X’05’ Connection refused<br>X’06’ TTL expired<br>X’07’ Command not supported<br>X’08’ Address type not supported<br>X’09’ to X’FF’ unassigned<br>RSV 保留字段<br>ATYPE 同请求的ATYPE<br>BND.ADDR 服务绑定的地址<br>BND.PORT 服务绑定的端口DST.PORT    </p>
 <p>针对响应的结构中，BND.ADDR和BND.PORT值得特别关注一下，可能有朋友在这里会产生困惑，返回的地址和端口是用来做什么的呢？</p>
 <p>我们回过头看图2.2，可以发现在图中socks5既充当socks服务器，又充当relay服务器。实际上这两个是可以被拆开的，当我们的socks5 server和relay server不是一体的，就需要告知客户端relay server的地址，这个地址就是BND.ADDR和BND.PORT。</p>
