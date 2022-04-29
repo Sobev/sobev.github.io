@@ -25,7 +25,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/Sobev/image-hosting@master/20220407/df4ee0c-27689cb6-ed4d-495c-800a-547110e564b2.png">
 <meta property="article:published_time" content="2022-04-29T00:58:32.000Z">
-<meta property="article:modified_time" content="2022-04-29T01:30:03.072Z">
+<meta property="article:modified_time" content="2022-04-29T01:37:26.925Z">
 <meta property="article:author" content="Kirby">
 <meta property="article:tag" content="SOCKS5">
 <meta name="twitter:card" content="summary_large_image">
@@ -294,9 +294,28 @@
 <p>socks5服务器收到客户端的请求后，需要返回一个响应，结构如下</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java">+----+-----+-------+------+----------+----------+<br>|VER | REP |  RSV  | ATYP | BND.ADDR | BND.PORT |<br>+----+-----+-------+------+----------+----------+<br>| <span class="hljs-number">1</span>  |  <span class="hljs-number">1</span>  | X<span class="hljs-string">&#x27;00&#x27;</span> |  <span class="hljs-number">1</span>   | Variable |    <span class="hljs-number">2</span>     |<br>+----+-----+-------+------+----------+----------+<br></code></pre></td></tr></table></figure>
 
-<p>VER socks版本，这里为0x05<br>REP Relay field,内容取值如下<br>X’00’ succeeded<br>X’01’ general SOCKS server failure<br>X’02’ connection not allowed by ruleset<br>X’03’ Network unreachable<br>X’04’ Host unreachable<br>X’05’ Connection refused<br>X’06’ TTL expired<br>X’07’ Command not supported<br>X’08’ Address type not supported<br>X’09’ to X’FF’ unassigned<br>RSV 保留字段<br>ATYPE 同请求的ATYPE<br>BND.ADDR 服务绑定的地址<br>BND.PORT 服务绑定的端口DST.PORT    </p>
+<ul>
+<li>VER socks版本，这里为0x05</li>
+<li>REP Relay field,内容取值如下<ul>
+<li>X’00’ succeeded</li>
+<li>X’01’ general SOCKS server failure</li>
+<li>X’02’ connection not allowed by ruleset</li>
+<li>X’03’ Network unreachable</li>
+<li>X’04’ Host unreachable</li>
+<li>X’05’ Connection refused</li>
+<li>X’06’ TTL expired</li>
+<li>X’07’ Command not supported</li>
+<li>X’08’ Address type not supported</li>
+<li>X’09’ to X’FF’ unassigned</li>
+</ul>
+</li>
+<li>RSV 保留字段</li>
+<li>ATYPE 同请求的ATYPE</li>
+<li>BND.ADDR 服务绑定的地址</li>
+<li>BND.PORT 服务绑定的端口DST.PORT    </li>
+</ul>
 <p>针对响应的结构中，BND.ADDR和BND.PORT值得特别关注一下，可能有朋友在这里会产生困惑，返回的地址和端口是用来做什么的呢？</p>
-<p>我们回过头看图2.2，可以发现在图中socks5既充当socks服务器，又充当relay服务器。实际上这两个是可以被拆开的，当我们的socks5 server和relay server不是一体的，就需要告知客户端relay server的地址，这个地址就是BND.ADDR和BND.PORT。</p>
+<p>socks5既充当socks服务器，又充当relay服务器。实际上这两个是可以被拆开的，当我们的socks5 server和relay server不是一体的，就需要告知客户端relay server的地址，这个地址就是BND.ADDR和BND.PORT。</p>
 <p>当我们的relay server和socks5 server是同一台服务器时，BND.ADDR和BND.PORT的值全部为0即可。</p>
 <h2 id="relay"><a href="#relay" class="headerlink" title="relay"></a>relay</h2><p>socks5服务器收到请求后，解析内容。如果是UDP请求，服务器直接转发; 如果是TCP请求，服务器向目标服务器建立TCP连接，后续负责把客户端的所有数据转发到目标服务。</p>
 <p>详细可见 <a target="_blank" rel="noopener" href="https://github.com/Sobev/socks5-impl">https://github.com/Sobev/socks5-impl</a></p>
