@@ -4,6 +4,19 @@
   
   
   <entry>
+    <title>Mysql page查询优化</title>
+    <link href="/2022/08/02/Mysql-page%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96/"/>
+    <url>/2022/08/02/Mysql-page%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96/</url>
+    
+    <content type="html"><![CDATA[<p>在千万级数据中，分页查询到第1000w之后的十条数据</p><p>首先想到的就是<code>SELECT * FROM bill_in bi LIMIT 10000000,10</code></p><p>总共有1900w+数据<br>统计这些数据居然也花了11s，因为用的是Innodb，并没有维护总的数据条数，因此要一条条计数<br>这也从侧面说明了在大数据量的情况下，使用Count(*)是不太合适的</p><p><img src="https://git.poker/Sobev/image-hosting/blob/master/20220512/image.41hwo4mz5560.png?raw=true"></p><p>看看分页查询的执行时间 :)</p><p><img src="https://git.poker/Sobev/image-hosting/blob/master/20220512/image.6xcz9kbqu4w0.png?raw=true" alt="raw"></p><p>Shit!! :(<br>时间也很长，返回前端的话也肯定已经超时了</p><h4 id="优化手段"><a href="#优化手段" class="headerlink" title="优化手段"></a>优化手段</h4><p>在这张表中，id是它的索引，并且设置成了自增，因此可以利用这个特性，使用索引加快速度</p><figure class="highlight plaintext"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><pre><code class="hljs mysql">SELECT * FROM bill_in bi WHERE bi.id &gt; (SELECT id FROM `bill_in` LIMIT 19000000,1) LIMIT 10<br></code></pre></td></tr></table></figure><p>试试时间</p><p><img src="https://git.poker/Sobev/image-hosting/blob/master/20220512/image.26jb81achlog.png?raw=true"></p><p>3.7s，相比前面来说快了很多，由于服务器性能原因只能到这个水平了。。。<br>这3.7s的时间也大都花在了<code>SELECT id FROM </code>bill_in<code> LIMIT 19000000,1</code>这一句上</p>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>BFS 滑块问题</title>
     <link href="/2022/06/24/BFS-%E6%BB%91%E5%9D%97%E9%97%AE%E9%A2%98/"/>
     <url>/2022/06/24/BFS-%E6%BB%91%E5%9D%97%E9%97%AE%E9%A2%98/</url>

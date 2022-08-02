@@ -188,6 +188,39 @@
   <div class="row mx-auto index-card">
     
     
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/08/02/Mysql-page%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96/" target="_self">
+          Mysql page查询优化
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/08/02/Mysql-page%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96/" target="_self">
+          
+          在千万级数据中，分页查询到第1000w之后的十条数据 首先想到的就是SELECT * FROM bill_in bi LIMIT 10000000,10 总共有1900w+数据统计这些数据居然也花了11s，因为用的是Innodb，并没有维护总的数据条数，因此要一条条计数这也从侧面说明了在大数据量的情况下，使用Count(*)是不太合适的  看看分页查询的执行时间 :)  Shit!! :(时间也很
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-08-02 15:32" pubdate>
+              2022-08-02
+            </time>
+          </div>
+        
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
       <div class="col-12 col-md-4 m-auto index-img">
         <a href="/2022/06/24/BFS-%E6%BB%91%E5%9D%97%E9%97%AE%E9%A2%98/" target="_self">
           <img src="https://cdn.jsdelivr.net/gh/Sobev/image-hosting@master/20220512/dreams_by_aniacinaraduarte_df7wjjf.6va5aez1vqo0.jpg" srcset="/img/loading.gif" lazyload alt="BFS 滑块问题">
@@ -592,52 +625,6 @@
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/DDOS/">DDOS</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2022/04/08/SOCKET-Communication/" target="_self">
-          <img src="https://cdn.jsdelivr.net/gh/Sobev/image-hosting@master/20220407/ai_art_030_by_kointheai_df33hn6.jpg" srcset="/img/loading.gif" lazyload alt="SOCKET Communication">
-        </a>
-      </div>
-    
-    <article class="col-12 col-md-8 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2022/04/08/SOCKET-Communication/" target="_self">
-          SOCKET Communication
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2022/04/08/SOCKET-Communication/" target="_self">
-          
-          基于TCP协议的Socket调用过程 测试代码服务端 12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061626364656667686970&#x2F;* *  把从客户端读取到的一行数据的字符进行翻转，然后发送给客户端 *  当读取
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2022-04-08 09:16" pubdate>
-              2022-04-08
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/socket/">socket</a>
             
           </div>
         
