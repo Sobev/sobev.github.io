@@ -23,14 +23,13 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="在千万级数据中，分页查询到第1000w之后的十条数据 首先想到的就是SELECT * FROM bill_in bi LIMIT 10000000,10 总共有1900w+数据统计这些数据居然也花了11s，因为用的是Innodb，并没有维护总的数据条数，因此要一条条计数这也从侧面说明了在大数据量的情况下，使用Count(*)是不太合适的  看看分页查询的执行时间 :)  Shit!! :(时间也很">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://git.poker/Sobev/image-hosting/blob/master/20220512/image.41hwo4mz5560.png?raw=true">
-<meta property="og:image" content="https://git.poker/Sobev/image-hosting/blob/master/20220512/image.6xcz9kbqu4w0.png?raw=true">
-<meta property="og:image" content="https://git.poker/Sobev/image-hosting/blob/master/20220512/image.26jb81achlog.png?raw=true">
+<meta property="og:image" content="https://cdn.staticaly.com/gh/Sobev/image-hosting@master/20220512/love_trust_and_betrayal___agonizing_words_by_raw06arbitrator_dfaenbj.3cred67jcj60.jpg">
 <meta property="article:published_time" content="2022-08-02T07:32:46.000Z">
-<meta property="article:modified_time" content="2022-08-02T07:49:20.114Z">
+<meta property="article:modified_time" content="2022-08-02T08:03:10.366Z">
 <meta property="article:author" content="Kirby">
+<meta property="article:tag" content="Mysql">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://git.poker/Sobev/image-hosting/blob/master/20220512/image.41hwo4mz5560.png?raw=true">
+<meta name="twitter:image" content="https://cdn.staticaly.com/gh/Sobev/image-hosting@master/20220512/love_trust_and_betrayal___agonizing_words_by_raw06arbitrator_dfaenbj.3cred67jcj60.jpg">
   
   
   <title>Mysql page查询优化 - Hexo</title>
@@ -244,14 +243,14 @@
               <p>在千万级数据中，分页查询到第1000w之后的十条数据</p>
 <p>首先想到的就是<code>SELECT * FROM bill_in bi LIMIT 10000000,10</code></p>
 <p>总共有1900w+数据<br>统计这些数据居然也花了11s，因为用的是Innodb，并没有维护总的数据条数，因此要一条条计数<br>这也从侧面说明了在大数据量的情况下，使用Count(*)是不太合适的</p>
-<p><img src="https://git.poker/Sobev/image-hosting/blob/master/20220512/image.41hwo4mz5560.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://cdn.staticaly.com/gh/Sobev/image-hosting@master/20220512/image.41hwo4mz5560.png" srcset="/img/loading.gif" lazyload></p>
 <p>看看分页查询的执行时间 :)</p>
-<p><img src="https://git.poker/Sobev/image-hosting/blob/master/20220512/image.6xcz9kbqu4w0.png?raw=true" srcset="/img/loading.gif" lazyload alt="raw"></p>
+<p><img src="https://cdn.staticaly.com/gh/Sobev/image-hosting@master/20220512/image.6xcz9kbqu4w0.png" srcset="/img/loading.gif" lazyload alt="raw"></p>
 <p>Shit!! :(<br>时间也很长，返回前端的话也肯定已经超时了</p>
 <h4 id="优化手段"><a href="#优化手段" class="headerlink" title="优化手段"></a>优化手段</h4><p>在这张表中，id是它的索引，并且设置成了自增，因此可以利用这个特性，使用索引加快速度</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><pre><code class="hljs mysql">SELECT * FROM bill_in bi WHERE bi.id &gt; (SELECT id FROM `bill_in` LIMIT 19000000,1) LIMIT 10<br></code></pre></td></tr></table></figure>
 <p>试试时间</p>
-<p><img src="https://git.poker/Sobev/image-hosting/blob/master/20220512/image.26jb81achlog.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://cdn.staticaly.com/gh/Sobev/image-hosting@master/20220512/image.26jb81achlog.png" srcset="/img/loading.gif" lazyload></p>
 <p>3.7s，相比前面来说快了很多，由于服务器性能原因只能到这个水平了。。。<br>这3.7s的时间也大都花在了<code>SELECT id FROM </code>bill_in<code> LIMIT 19000000,1</code>这一句上</p>
 
             </div>
@@ -259,6 +258,13 @@
             <div>
               <div class="post-metas mb-3">
                 
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Mysql/">Mysql</a>
+                    
+                  </div>
                 
               </div>
               
